@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAYTSS | Luxury Atelier</title>
+<link rel="stylesheet" href="baytss.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ══ NAVBAR: transparent floating over hero ══ */
+.navbar{position:fixed!important;background:transparent!important;border-bottom:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transition:background 0.5s,backdrop-filter 0.5s; width: 100%;}
+.navbar.scrolled{background:rgba(8,6,3,0.93)!important;backdrop-filter:blur(24px)!important;-webkit-backdrop-filter:blur(24px)!important;border-bottom:1px solid var(--border)!important;}
+[data-theme="light"] .navbar.scrolled{background:rgba(253,248,240,0.96)!important;}
+.navbar .nav-links a{color:rgba(255,255,255,0.78)!important;}
+.navbar .nav-links a:hover,.navbar .nav-links a.active{color:#fff!important;background:rgba(255,255,255,0.1)!important;}
+.navbar.scrolled .nav-links a{color:var(--text2)!important;}
+.navbar.scrolled .nav-links a:hover,.navbar.scrolled .nav-links a.active{color:var(--amber2)!important;background:var(--glow)!important;}
+.navbar .login-btn{color:rgba(255,255,255,0.8)!important;border-color:rgba(255,255,255,0.3)!important;}
+.navbar .login-btn:hover{background:rgba(255,255,255,0.1)!important;}
+.navbar.scrolled .login-btn{color:var(--amber2)!important;border-color:var(--border2)!important;}
+.navbar .theme-toggle{border-color:rgba(255,255,255,0.3)!important;color:rgba(255,255,255,0.7)!important;background:rgba(0,0,0,0.2)!important;}
+.navbar.scrolled .theme-toggle{border-color:var(--border2)!important;color:var(--amber2)!important;background:var(--glow)!important;}
+
+/* ══ HERO: BUGATTI-STYLE STACKED FULL-BLEED VIDEO PANELS ══ */
+.hero-panels{margin-top:0;}
+
+.hero-panel{
+  position:relative;width:100%;height:100vh;
+  min-height:560px;max-height:980px;
+  overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
+  background:#050402;
+}
+.hero-panel.panel-2{height:95vh;max-height:900px;}
+
+/* Video layer — supports dual stacked videos */
+.hero-panel-video{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;}
+
+/* Primary (vs1): full cover fill */
+.hero-panel-video .vid-primary{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;display:block;
+  z-index:1;
+  transition:transform 10s ease;
+}
+/* Secondary overlay (vs2): blend on top for depth */
+.hero-panel-video .vid-overlay{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;display:block;
+  z-index:2;
+  opacity:0.42;
+  mix-blend-mode:screen;
+  transition:transform 10s ease, opacity 1.2s ease;
+}
+[data-theme="light"] .hero-panel-video .vid-overlay{
+  mix-blend-mode:multiply;
+  opacity:0.28;
+}
+.hero-panel:hover .hero-panel-video .vid-primary,
+.hero-panel:hover .hero-panel-video .vid-overlay{transform:scale(1.035);}
+
+/* Fallback image when no video loads */
+.hero-panel-fallback{
+  position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;
+  transition:transform 10s ease;
+}
+.hero-panel:hover .hero-panel-fallback{transform:scale(1.04);}
+
+/* Gradient overlays */
+.hero-panel-overlay{position:absolute;inset:0;z-index:2;}
+.hero-panel-overlay.dark{
+  background:
+    linear-gradient(to top, rgba(5,4,2,0.88) 0%, rgba(5,4,2,0.25) 38%, rgba(5,4,2,0.08) 60%, transparent 80%),
+    linear-gradient(to bottom, rgba(5,4,2,0.55) 0%, transparent 28%),
+    linear-gradient(120deg, rgba(5,4,2,0.18) 0%, transparent 50%);
+}
+.hero-panel-overlay.amber{
+  background:
+    linear-gradient(to top, rgba(5,4,2,0.92) 0%, rgba(10,7,2,0.45) 42%, transparent 68%),
+    linear-gradient(to bottom, rgba(5,4,2,0.55) 0%, transparent 28%),
+    radial-gradient(ellipse at 65% 85%, rgba(200,135,26,0.14) 0%, transparent 55%);
+}
+
+/* Corner bracket accents */
+.hero-corner{position:absolute;width:44px;height:44px;z-index:3;opacity:0.38;}
+.hero-corner.tl{top:88px;left:4%;border-top:1px solid rgba(255,255,255,0.7);border-left:1px solid rgba(255,255,255,0.7);}
+.hero-corner.tr{top:88px;right:4%;border-top:1px solid rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.7);}
+.hero-corner.bl{bottom:5.5rem;left:4%;border-bottom:1px solid rgba(255,255,255,0.7);border-left:1px solid rgba(255,255,255,0.7);}
+.hero-corner.br{bottom:5.5rem;right:4%;border-bottom:1px solid rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.7);}
+
+/* Side floating info */
+.hero-side{position:absolute;z-index:3;display:flex;flex-direction:column;gap:0.25rem;}
+.hero-side.left{left:4%;bottom:6rem;align-items:flex-start;}
+.hero-side.right{right:4%;bottom:6rem;align-items:flex-end;}
+.hero-side-lbl{font-size:0.52rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.32);font-family:'Jost',sans-serif;}
+.hero-side-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:rgba(255,255,255,0.82);line-height:1;}
+
+/* Panel counter */
+.hero-count{position:absolute;top:88px;left:50%;transform:translateX(-50%);z-index:3;font-family:'Jost',sans-serif;font-size:0.58rem;letter-spacing:5px;color:rgba(255,255,255,0.18);}
+
+/* ── Main content: centred bottom ── */
+.hero-content{
+  position:relative;z-index:4;
+  width:100%;text-align:center;
+  padding:0 6% 5.5rem;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+.hero-eyebrow{
+  font-family:'Jost',sans-serif;
+  font-size:0.58rem;letter-spacing:7px;text-transform:uppercase;
+  color:rgba(255,255,255,0.5);font-weight:300;
+  margin-bottom:1.1rem;
+}
+
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,9vw,9rem);
+  font-weight:400;line-height:0.9;
+  color:#fff;letter-spacing:0.05em;
+  text-transform:uppercase;
+  margin-bottom:1.2rem;
+  text-shadow:0 8px 60px rgba(0,0,0,0.5);
+}
+.hero-title.shimmer{
+  background:linear-gradient(110deg,#fff 0%,#f0d070 28%,#e0a030 52%,#fff 76%,#f0d070 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:titleShimmer 6s linear infinite;
+}
+@keyframes titleShimmer{0%{background-position:0% center;}100%{background-position:250% center;}}
+
+.hero-sub{
+  font-family:'Jost',sans-serif;
+  font-size:0.68rem;font-weight:300;letter-spacing:5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.48);
+  margin-bottom:2.2rem;
+}
+
+.hero-btn{
+  display:inline-flex;align-items:center;gap:0.65rem;
+  padding:0.82rem 2.4rem;
+  border:1px solid rgba(255,255,255,0.65);
+  background:rgba(0,0,0,0.2);
+  color:#fff;font-family:'Jost',sans-serif;
+  font-size:0.6rem;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.35s;border-radius:1px;
+  backdrop-filter:blur(6px);
+}
+.hero-btn:hover{background:#fff;color:#050402;border-color:#fff;box-shadow:0 0 0 1px #fff,0 12px 40px rgba(0,0,0,0.35);}
+.hero-btn.gold{border-color:rgba(224,160,48,0.8);color:var(--amber2);}
+.hero-btn.gold:hover{background:linear-gradient(135deg,var(--amber2),var(--amber));border-color:transparent;color:#050402;box-shadow:0 10px 36px rgba(200,135,26,0.45);}
+
+/* Scroll cue */
+.hero-scroll{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  z-index:4;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;opacity:0.4;transition:opacity 0.3s;
+}
+.hero-scroll:hover{opacity:0.8;}
+.hero-scroll-bar{width:1px;height:36px;background:linear-gradient(to bottom,rgba(255,255,255,0.8),transparent);animation:scrollDrop 2s ease-in-out infinite;}
+@keyframes scrollDrop{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+.hero-scroll-txt{font-family:'Jost',sans-serif;font-size:0.48rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+
+/* Panel separator */
+.panel-sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,135,26,0.45) 25%,rgba(200,135,26,0.45) 75%,transparent);}
+
+/* ══ MARQUEE ══ */
+.marquee-strip{
+  background:linear-gradient(90deg,var(--amber) 0%,var(--amber2) 50%,var(--amber) 100%);
+  background-size:200% auto;animation:mGrad 5s linear infinite;
+  padding:0.72rem 0;overflow:hidden;white-space:nowrap;
+}
+@keyframes mGrad{0%{background-position:0% center;}100%{background-position:200% center;}}
+.marquee-inner{display:inline-flex;animation:marquee 30s linear infinite;}
+.marquee-inner:hover{animation-play-state:paused;}
+.marquee-item{font-size:0.57rem;letter-spacing:4px;text-transform:uppercase;font-weight:700;color:#050402;padding:0 2.5rem;white-space:nowrap;}
+.marquee-sep{color:rgba(5,4,2,0.38);padding:0 0.3rem;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ══ INTRO ══ */
+.intro-section{width:92%;max-width:1300px;margin:7rem auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+.intro-visual{position:relative;}
+.intro-img-stack{position:relative;padding-bottom:2rem;}
+.intro-img-main{width:85%;aspect-ratio:3/4;border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-left:auto;}
+.intro-img-main img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.88);transition:transform 0.7s;}
+.intro-img-main:hover img{transform:scale(1.04);}
+.intro-img-accent{position:absolute;bottom:0;left:0;width:46%;aspect-ratio:4/3;border-radius:4px;overflow:hidden;border:3px solid var(--bg);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.intro-img-accent img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.85);}
+.intro-gold-bar{position:absolute;top:2rem;left:-0.4rem;width:3px;height:55%;background:linear-gradient(to bottom,var(--amber2),transparent);}
+.intro-badge{position:absolute;top:1.5rem;right:-1.5rem;width:108px;height:108px;border-radius:50%;background:linear-gradient(135deg,var(--amber2),var(--amber));display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid var(--bg);z-index:2;box-shadow:0 8px 30px rgba(200,135,26,0.4);}
+.intro-badge-num{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:#050402;line-height:1;}
+.intro-badge-lbl{font-size:0.46rem;letter-spacing:2px;text-transform:uppercase;color:#050402;opacity:0.8;margin-top:0.1rem;}
+.intro-text .section-title{font-size:2.7rem;line-height:1.12;margin-bottom:1.2rem;}
+.intro-desc{font-size:0.87rem;color:var(--text2);line-height:2.1;margin-bottom:1.8rem;}
+.intro-features{display:flex;flex-direction:column;gap:0.9rem;margin-bottom:2.2rem;}
+.intro-feature{display:flex;align-items:flex-start;gap:1rem;font-size:0.82rem;color:var(--text2);line-height:1.65;}
+.intro-feat-icon{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,rgba(200,135,26,0.2),rgba(200,135,26,0.04));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;margin-top:0.1rem;}
+
+/* ══ STATS ROW ══ */
+.stats-row{width:92%;max-width:1300px;margin:5rem auto;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel);}
+.stat-item{padding:2.5rem 2rem;text-align:center;border-right:1px solid var(--border);transition:background 0.3s;}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:var(--panel2);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--amber3),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:0.4rem;}
+.stat-lbl{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);font-weight:500;}
+
+/* ══ FEATURED CARS: horizontal scroll ══ */
+.featured-section{margin:5rem 0;overflow:hidden;}
+.featured-header{width:92%;max-width:1400px;margin:0 auto 2rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+.featured-track{display:flex;gap:1.2rem;padding:0 4% 1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.featured-track::-webkit-scrollbar{display:none;}
+.feat-car{flex:0 0 310px;border-radius:10px;overflow:hidden;cursor:pointer;background:var(--panel);border:1px solid var(--border);transition:all 0.35s;scroll-snap-align:start;position:relative;}
+.feat-car:hover{transform:translateY(-6px);border-color:var(--border2);box-shadow:0 20px 60px var(--shadow);}
+.feat-car-img{width:100%;height:210px;overflow:hidden;background:var(--panel2);position:relative;}
+.feat-car-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.feat-car:hover .feat-car-img img{transform:scale(1.07);}
+.feat-car-img-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,4,2,0.5) 0%,transparent 55%);}
+[data-theme="light"] .feat-car-img-grad{background:linear-gradient(to top,rgba(42,30,10,0.28) 0%,transparent 55%);}
+.feat-car-body{padding:1.1rem 1.2rem 1.3rem;}
+.feat-car-brand{font-size:0.57rem;letter-spacing:3px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:0.3rem;}
+.feat-car-name{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:700;color:var(--text);margin-bottom:0.3rem;}
+.feat-car-price{font-size:0.86rem;font-weight:700;color:var(--amber2);}
+.feat-car-cta{font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);transition:color 0.2s;margin-top:0.4rem;}
+.feat-car:hover .feat-car-cta{color:var(--amber2);}
+
+/* ══ PILLARS ══ */
+.pillars-section{width:92%;max-width:1300px;margin:6rem auto;}
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem;}
+.pillar{background:var(--panel);border-radius:10px;padding:1.8rem;border:1px solid var(--border);transition:all 0.3s;text-align:center;position:relative;overflow:hidden;}
+.pillar::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,135,26,0.06),transparent 60%);opacity:0;transition:opacity 0.3s;}
+.pillar:hover::before{opacity:1;}
+.pillar:hover{border-color:var(--border2);transform:translateY(-5px);box-shadow:0 16px 50px var(--shadow);}
+.pillar-icon{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,rgba(200,135,26,0.18),rgba(200,135,26,0.04));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:1.6rem;transition:transform 0.3s;}
+.pillar:hover .pillar-icon{transform:scale(1.1);}
+.pillar-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.55rem;}
+.pillar-desc{font-size:0.75rem;color:var(--text2);line-height:1.8;}
+
+/* ══ NEWS TEASER ══ */
+.news-teaser-section{width:92%;max-width:1400px;margin:5rem auto;}
+.news-teaser-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:1.5rem;margin-top:2rem;}
+.ntc{background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.3s;}
+.ntc:hover{border-color:var(--border2);transform:translateY(-5px);box-shadow:0 20px 50px var(--shadow);}
+.ntc-img{width:100%;overflow:hidden;position:relative;}
+.ntc:first-child .ntc-img{height:250px;}
+.ntc:not(:first-child) .ntc-img{height:175px;}
+.ntc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.55s;filter:brightness(0.84);}
+.ntc:hover .ntc-img img{transform:scale(1.06);filter:brightness(0.94);}
+.ntc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(5,4,2,0.48) 0%,transparent 55%);}
+[data-theme="light"] .ntc-img::after{background:linear-gradient(to top,rgba(42,30,10,0.28) 0%,transparent 55%);}
+.ntc-body{padding:1.2rem 1.3rem 1.4rem;}
+.ntc-cat{font-size:0.56rem;letter-spacing:3.5px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:0.4rem;}
+.ntc-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:0.38rem;}
+.ntc-date{font-size:0.67rem;color:var(--text3);}
+
+/* ══ CTA BAND ══ */
+.cta-band{width:100%;position:relative;overflow:hidden;padding:7rem 8%;background:#050402;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.cta-band-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80&auto=format&fit=crop') center/cover no-repeat;opacity:0.1;filter:saturate(0.35);}
+.cta-band-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,4,2,0.92) 0%,rgba(5,4,2,0.62) 50%,rgba(5,4,2,0.4) 100%);}
+.cta-band-inner{position:relative;z-index:2;max-width:680px;}
+.cta-eyebrow{font-size:0.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;}
+.cta-band h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:1.2rem;}
+.cta-band h2 em{font-style:italic;background:linear-gradient(110deg,var(--amber3),var(--amber2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-band p{font-size:0.87rem;color:rgba(255,255,255,0.62);line-height:1.9;margin-bottom:2.5rem;max-width:540px;}
+.cta-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.cta-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.9rem 2.2rem;border-radius:1px;font-family:'Jost',sans-serif;font-size:0.66rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;border:none;}
+.cta-btn.primary{background:linear-gradient(135deg,var(--amber2),var(--amber));color:#050402;box-shadow:0 6px 28px rgba(200,135,26,0.4);}
+.cta-btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,135,26,0.55);}
+.cta-btn.outline{background:transparent;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.8);backdrop-filter:blur(4px);}
+.cta-btn.outline:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.7);color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1100px){.pillars-grid{grid-template-columns:repeat(2,1fr);}.news-teaser-grid{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:repeat(2,1fr);}.stats-row .stat-item:nth-child(2){border-right:none;}.stats-row .stat-item:nth-child(n+3){border-top:1px solid var(--border);}}
+@media(max-width:900px){.intro-section{grid-template-columns:1fr;gap:4rem;}.intro-img-accent{display:none;}.intro-badge{right:0;top:0;}.hero-side{display:none;}.hero-corner{display:none;}}
+@media(max-width:650px){.hero-title{font-size:clamp(3.2rem,13vw,5.5rem);}.pillars-grid{grid-template-columns:1fr 1fr;}.news-teaser-grid{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr 1fr;}.feat-car{flex:0 0 265px;}.cta-band{padding:5rem 6%;}}
+</style>
+</head>
+<body>
+
+<!-- FLOATING NAVBAR -->
+<nav class="navbar" id="mainNav">
+  <a class="logo" href="index.html">BAYTSS</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="new-arrivals.html">New Arrivals</a></li>
+    <li><a href="history.html">Chronicle</a></li>
+    <li><a href="store.html">Atelier</a></li>
+    <li><a href="news.html">Journal</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-user-pill" id="navUserPill"><span class="nav-user-name" id="navUserName"></span><button class="nav-logout-btn" id="navLogoutBtn">Sign out</button></div>
+    <button class="login-btn" id="navLoginBtn">Sign In</button>
+    <button class="signup-btn" id="navSignupBtn">Join</button>
+    <button class="theme-toggle" id="themeBtn" title="Toggle theme">☀</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO: BUGATTI-STYLE STACKED VIDEO PANELS
+     ══════════════════════════════════════════ -->
+<div class="hero-panels">
+
+  <!-- PANEL 1: Primary full-bleed hero — vs1.mp4 bg + vs2.mp4 overlay -->
+  <div class="hero-panel">
+    <div class="hero-panel-video" id="heroVidPanel1">
+      <!-- Fallback photo (shown until videos load or if files missing) -->
+      <!-- Primary background video: vs1.mp4 -->
+      <video class="vid-primary" id="vidPrimary"
+        src="vs1.mp4" autoplay loop muted playsinline
+        onerror="this.style.display='none'">
+      </video>
+    </div>
+    <div class="hero-panel-overlay dark"></div>
+    <div class="hero-corner tl"></div><div class="hero-corner tr"></div><div class="hero-corner br"></div>
+    <div class="hero-count">01 — 02</div>
+    <div class="hero-side left"><div class="hero-side-lbl">Atelier</div><div class="hero-side-val">Baytss</div></div>
+    <div class="hero-side right"><div class="hero-side-lbl">Est.</div><div class="hero-side-val">2024</div></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Baytss Luxury Atelier &nbsp;—&nbsp; The Collection</div>
+      <h1 class="hero-title shimmer">Where Precision<br>Meets Legacy</h1>
+      <div class="hero-sub">A curated universe of the world's most significant automobiles</div>
+      <button class="hero-btn" onclick="location.href='store.html'">
+        Explore the Atelier
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('heroP2').scrollIntoView({behavior:'smooth'})">
+      <div class="hero-scroll-bar"></div>
+      <div class="hero-scroll-txt">Scroll</div>
+    </div>
+  </div>
+
+  <!-- SEPARATOR -->
+  <div class="panel-sep"></div>
+
+  <!-- PANEL 2: Secondary cinematic panel (like Bugatti Solitaire) -->
+  <div class="hero-panel panel-2" id="heroP2">
+    <div class="hero-panel-video" id="heroVidPanel2">
+      <div class="hero-panel-fallback" id="heroFb2"
+           style="background-image:url('Photo1.jpg')">
+      </div>
+    </div>
+    <div class="hero-panel-overlay amber"></div>
+    <div class="hero-corner tl"></div><div class="hero-corner tr"></div><div class="hero-corner bl"></div>
+    <div class="hero-count">02 — 02</div>
+    <div class="hero-side left"><div class="hero-side-lbl">Season</div><div class="hero-side-val">2025</div></div>
+    <div class="hero-side right"><div class="hero-side-lbl">Marques</div><div class="hero-side-val">7+</div></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">The Grand Concours &nbsp;—&nbsp; Chantilly 2025</div>
+      <h1 class="hero-title" style="font-size:clamp(3.2rem,7vw,7.5rem);">The Chronicle<br>Continues</h1>
+      <div class="hero-sub">Rooted in tradition. Built to leave a legacy.</div>
+      <button class="hero-btn gold" onclick="location.href='history.html'">
+        Discover the Chronicle
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /hero-panels -->
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span class="marquee-item">Bugatti Chiron</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Ferrari LaFerrari</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Koenigsegg Jesko</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Pagani Huayra</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">McLaren P1</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Lamborghini Revuelto</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Porsche 918 Spyder</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Bugatti Tourbillon</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Bugatti Chiron</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Ferrari LaFerrari</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Koenigsegg Jesko</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Pagani Huayra</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">McLaren P1</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Lamborghini Revuelto</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Porsche 918 Spyder</span><span class="marquee-sep">✦</span>
+    <span class="marquee-item">Bugatti Tourbillon</span><span class="marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro-section fade-up">
+  <div class="intro-visual">
+    <div class="intro-img-stack">
+      <div class="intro-gold-bar"></div>
+      <div class="intro-img-main">
+        <img src="centodieci.png" alt="Baytss Atelier">
+      </div>
+      <div class="intro-img-accent">
+        <img src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=600&q=80&auto=format&fit=crop" alt="Detail">
+      </div>
+    </div>
+    <div class="intro-badge"><div class="intro-badge-num">20</div><div class="intro-badge-lbl">Marques</div></div>
+  </div>
+  <div class="intro-text">
+    <div class="section-eyebrow">The Baytss Philosophy</div>
+    <h2 class="section-title">Craft Without<br>Compromise</h2>
+    <p class="intro-desc">Founded on a single conviction — that the most meaningful luxury objects are those made with full awareness of why they exist. The Baytss atelier curates only what endures.</p>
+    <div class="intro-features">
+      <div class="intro-feature"><div class="intro-feat-icon">✦</div>Only the world's most significant automobiles, hand-selected by our founding council</div>
+      <div class="intro-feature"><div class="intro-feat-icon">🏛</div>Private viewings, bespoke acquisition, and Michelin-starred concours events</div>
+      <div class="intro-feature"><div class="intro-feat-icon">🔑</div>A members-only circle where collectors and connoisseurs converge</div>
+    </div>
+    <button class="primary-btn" onclick="location.href='history.html'">Explore Our Chronicle</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row fade-up">
+  <div class="stat-item"><div class="stat-num">20</div><div class="stat-lbl">Curated Vehicles</div></div>
+  <div class="stat-item"><div class="stat-num">7</div><div class="stat-lbl">Legendary Marques</div></div>
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">Global Ateliers</div></div>
+  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-lbl">Ambition</div></div>
+</div>
+
+<!-- FEATURED CARS: horizontal scroll -->
+<section class="featured-section fade-up">
+  <div class="featured-header">
+    <div><div class="section-eyebrow">The Collection</div><h2 class="section-title" style="margin-bottom:0">Chosen by the Atelier</h2></div>
+    <button class="secondary-btn" onclick="location.href='store.html'">View All 20 →</button>
+  </div>
+  <div class="featured-track" id="featuredCarsGrid"></div>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars-section fade-up">
+  <div style="text-align:center"><div class="section-eyebrow" style="display:inline-block">Why Baytss</div></div>
+  <h2 class="section-title" style="text-align:center">The Four Pillars</h2>
+  <div class="pillars-grid">
+    <div class="pillar"><div class="pillar-icon">🔑</div><div class="pillar-title">Curation</div><p class="pillar-desc">Every vehicle is evaluated across seven dimensions. Only those that pass enter the collection.</p></div>
+    <div class="pillar"><div class="pillar-icon">🛡</div><div class="pillar-title">Provenance</div><p class="pillar-desc">Complete documentation, authenticated history, and independently verified credentials for every acquisition.</p></div>
+    <div class="pillar"><div class="pillar-icon">✦</div><div class="pillar-title">Discretion</div><p class="pillar-desc">Private transactions, secure delivery worldwide, and access only for registered Baytss members.</p></div>
+    <div class="pillar"><div class="pillar-icon">🏆</div><div class="pillar-title">Legacy</div><p class="pillar-desc">We do not chase the market. We seek what will be revered by the next generation of collectors.</p></div>
+  </div>
+</section>
+
+<!-- NEWS TEASER -->
+<section class="news-teaser-section fade-up">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;">
+    <div><div class="section-eyebrow">Baytss Journal</div><h2 class="section-title" style="margin-bottom:0">Latest Dispatches</h2></div>
+    <button class="secondary-btn" onclick="location.href='news.html'">All Articles →</button>
+  </div>
+  <div class="news-teaser-grid" id="newsTeaserGrid"></div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band fade-up">
+  <div class="cta-band-bg"></div><div class="cta-band-overlay"></div>
+  <div class="cta-band-inner">
+    <div class="cta-eyebrow">Private Membership</div>
+    <h2>Join the<br><em>Baytss Circle</em></h2>
+    <p>Access private viewings, exclusive acquisitions, and the most distinguished automotive events in the world. Membership is reserved for those who understand the value of deliberate choice.</p>
+    <div class="cta-btns">
+      <button class="cta-btn primary" id="joinCircleBtn">Request Access</button>
+      <button class="cta-btn outline" onclick="location.href='news.html'">Read the Journal</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div>
+      <div class="footer-logo">BAYTSS</div>
+      <p class="footer-tagline">A curated universe of luxury. Every piece, every word, every frame — chosen deliberately. Born from the belief that true excellence requires no justification.</p>
+      <div class="footer-social"><a class="footer-social-link" href="#">IG</a><a class="footer-social-link" href="#">X</a><a class="footer-social-link" href="#">LI</a><a class="footer-social-link" href="#">YT</a></div>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><ul><li><a href="index.html">Home</a></li><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="history.html">Chronicle</a></li><li><a href="store.html">Atelier</a></li><li><a href="news.html">Journal</a></li></ul></div>
+    <div class="footer-col"><h4>Atelier</h4><ul><li><a href="#">Bespoke Orders</a></li><li><a href="#">Private Viewings</a></li><li><a href="#">Concierge</a></li><li><a href="#">Authentication</a></li><li><a href="#">Global Delivery</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><div class="footer-contact-item"><strong>Address</strong>8 Rue du Faubourg Saint-Honoré<br>75008 Paris, France</div><div class="footer-contact-item"><strong>Enquiries</strong>atelier@baytss.com</div><div class="footer-contact-item"><strong>Hours</strong>Mon–Sat, 10:00–19:00 CET</div></div>
+  </div>
+  <div class="footer-certs"><span class="footer-cert">Certified Luxury Atelier</span><span class="footer-cert">Sustainable Craft Member</span><span class="footer-cert">LVMH Verified</span><span class="footer-cert">ISO 9001 Quality</span><span class="footer-cert">Global Shipping</span></div>
+  <div class="footer-bottom"><div class="footer-copy">© <span id="footerYear"></span> Baytss Luxury Atelier. All rights reserved. Registered in France.</div><div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div></div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="overlay-modal" id="authModal">
+  <div class="auth-card">
+    <button class="close-btn-x" id="closeAuthModal">&times;</button>
+    <span class="auth-card-logo">BAYTSS</span>
+    <h2 id="authTitle">Welcome Back</h2>
+    <p class="auth-subtitle" id="authSubtitle">Access your Baytss atelier experience.</p>
+    <div id="authNameGroup" class="form-group hidden"><label>Full Name</label><input type="text" id="authName"><div class="form-error" id="authNameError"></div></div>
+    <div id="authLocationGroup" class="form-group hidden"><label>City / Location</label><input type="text" id="authLocation"><div class="form-error" id="authLocationError"></div></div>
+    <div id="authBioGroup" class="form-group hidden"><label>Short Bio</label><textarea id="authBio"></textarea><div class="form-error" id="authBioError"></div></div>
+    <div class="form-group"><label>Email Address</label><input type="email" id="authEmail"><div class="form-error" id="authEmailError"></div></div>
+    <div class="form-group"><label>Password</label><input type="password" id="authPassword"><div class="form-error" id="authPasswordError"></div></div>
+    <div id="authGlobalError" class="form-error"></div><div id="authGlobalSuccess" class="form-success"></div>
+    <button class="primary-btn" id="authSubmitBtn" style="width:100%;margin-top:0.5rem">Sign In</button>
+    <div class="auth-toggle"><span id="authToggleText">New to Baytss?</span> <button id="authToggleBtn">Create account</button></div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+  <div class="modal-content">
+    <button class="close-modal-btn" id="closeProductModal">&times;</button>
+    <div class="modal-img" id="productModalImg"></div>
+    <div class="modal-detail">
+      <div class="modal-detail-label">Baytss Atelier</div>
+      <h2 id="productModalName"></h2>
+      <div class="modal-detail-price" id="productModalPrice"></div>
+      <div class="modal-detail-desc" id="productModalDesc"></div>
+      <div class="modal-actions"><div class="text-muted">Simulated checkout — no real payment processed.</div><button class="primary-btn" id="productModalBuyBtn">Acquire Now</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal" id="checkoutModal">
+  <div class="checkout-content">
+    <button class="close-modal-btn" id="closeCheckoutModal">&times;</button>
+    <div class="checkout-header"><h3>Baytss Secure Checkout</h3><p class="text-muted">Simulated — no real payment processed.</p></div>
+    <div class="checkout-summary" id="checkoutSummary"></div>
+    <div class="form-group"><label>Name on Card</label><input type="text" id="cardName"><div class="form-error" id="cardNameError"></div></div>
+    <div class="form-group"><label>Card Number</label><input type="text" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX"><div class="form-error" id="cardNumberError"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="cardExpiry" maxlength="5" placeholder="MM/YY"><div class="form-error" id="cardExpiryError"></div></div>
+      <div class="form-group"><label>CVV</label><input type="password" id="cardCvv" maxlength="4"><div class="form-error" id="cardCvvError"></div></div>
+    </div>
+    <div id="checkoutGlobalError" class="form-error"></div><div id="checkoutGlobalSuccess" class="form-success"></div>
+    <button class="primary-btn" id="placeOrderBtn" style="width:100%;margin-top:0.5rem">Place Order</button>
+  </div>
+</div>
+
+<!-- ADMIN FAB -->
+<button class="admin-fab hidden" id="adminFab"><div class="admin-fab-dot"></div>Admin</button>
+
+<!-- ADMIN PANEL -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <button class="admin-close-btn" id="closeAdminPanel">&times;</button>
+    <div class="admin-header"><div><h2>Baytss Admin Console</h2><div class="text-muted">Signed in as <span id="adminEmailLabel"></span></div></div></div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="heroTab">Hero Videos</button>
+      <button class="admin-tab-btn" data-tab="newsTab">News</button>
+      <button class="admin-tab-btn" data-tab="careerTab">Careers</button>
+      <button class="admin-tab-btn" data-tab="historyTab">History</button>
+      <button class="admin-tab-btn" data-tab="usersTab">Users</button>
+      <button class="admin-tab-btn" data-tab="ordersTab">Orders</button>
+    </div>
+    <div class="admin-section active" id="heroTab">
+      <h3>Hero Panel Videos</h3>
+      <span class="text-muted">
+        <strong>Panel 1</strong> always uses <code>vs1.mp4</code> (background) + <code>vs2.mp4</code> (overlay blend) — place both files in the same folder as index.html.<br>
+        <strong>Panel 2</strong> video is set below. Leave blank to use the default car photography fallback.
+      </span>
+      <div class="form-group mt-2"><label>Panel 2 Video — local path or URL (mp4)</label><input type="text" id="adminVideo2" placeholder="v2.mp4 or https://..."></div>
+      <div id="adminHeroMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminHeroSave">Save Panel 2 Video</button>
+    </div>
+    <div class="admin-section" id="newsTab">
+      <h3>Publish Article</h3><span class="text-muted">Add a new article to the Journal.</span>
+      <div class="form-group mt-2"><label>Title</label><input type="text" id="adminNewsTitleInput"></div>
+      <div class="form-group"><label>Image URL</label><input type="text" id="adminNewsImageInput"></div>
+      <div class="form-row"><div class="form-group"><label>Category</label><input type="text" id="adminNewsCategoryInput" placeholder="Event · Award · Launch"></div><div class="form-group"><label>Date</label><input type="date" id="adminNewsDateInput"></div></div>
+      <div class="form-group"><label>Content</label><textarea id="adminNewsDescInput"></textarea></div>
+      <div id="adminNewsMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminNewsAdd">Publish Article</button>
+      <div class="admin-list" id="adminNewsList"></div>
+    </div>
+    <div class="admin-section" id="careerTab">
+      <h3>Post Career Role</h3>
+      <div class="form-group mt-2"><label>Role Title</label><input type="text" id="adminCareerTitleInput"></div>
+      <div class="form-row"><div class="form-group"><label>Location</label><input type="text" id="adminCareerLocationInput"></div><div class="form-group"><label>Posted Date</label><input type="date" id="adminCareerDateInput"></div></div>
+      <div class="form-group"><label>Description</label><textarea id="adminCareerDescInput"></textarea></div>
+      <div id="adminCareerMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminCareerAdd">Post Role</button>
+      <div class="admin-list" id="adminCareerList"></div>
+    </div>
+    <div class="admin-section" id="historyTab">
+      <h3>Add History Entry</h3>
+      <div class="form-group mt-2"><label>Title</label><input type="text" id="adminHistTitleInput"></div>
+      <div class="form-row"><div class="form-group"><label>Year</label><input type="text" id="adminHistYearInput" placeholder="2024"></div><div class="form-group"><label>Image URL</label><input type="text" id="adminHistImageInput"></div></div>
+      <div class="form-group"><label>Short Description</label><input type="text" id="adminHistShortInput"></div>
+      <div class="form-group"><label>Full Story</label><textarea id="adminHistDescInput"></textarea></div>
+      <div id="adminHistoryMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminHistoryAdd">Add Entry</button>
+      <div class="admin-list" id="adminHistoryList"></div>
+    </div>
+    <div class="admin-section" id="usersTab"><h3>Registered Members</h3><div class="admin-list" id="adminUsersList"></div></div>
+    <div class="admin-section" id="ordersTab"><h3>Orders</h3><div class="admin-list" id="adminOrdersList"></div></div>
+  </div>
+</div>
+
+<script src="baytss_shared.js"></script>
+<script>
+(function(){
+'use strict';
+const B=window.BAYTSS;
+let selectedProduct=null;
+
+/* Navbar: becomes solid on scroll */
+const nav=document.getElementById('mainNav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60),{passive:true});
+
+/* ── Hero Videos ──
+   Panel 1: vs1.mp4 (primary bg) + vs2.mp4 (overlay blend) — hardcoded, always active.
+   Panel 2: controlled by admin settings (video2 field).
+   Fallback images show automatically if any video fails to load.
+*/
+(function setupHeroVideos(){
+  const fb1  = document.getElementById('heroFb1');
+  const vPri = document.getElementById('vidPrimary');
+  const vOvl = document.getElementById('vidOverlay');
+
+  // Hide fallback once at least the primary video loads
+  let primaryLoaded = false;
+  if(vPri){
+    vPri.addEventListener('loadeddata', function(){
+      if(!primaryLoaded){ primaryLoaded=true; if(fb1) fb1.style.display='none'; }
+    });
+    vPri.addEventListener('error', function(){ vPri.style.display='none'; });
+  }
+  if(vOvl){
+    vOvl.addEventListener('error', function(){ vOvl.style.display='none'; });
+  }
+
+  // Sync overlay to primary so they start at the same time
+  if(vPri && vOvl){
+    vPri.addEventListener('play', function(){
+      vOvl.currentTime = vPri.currentTime;
+      vOvl.play().catch(()=>{});
+    });
+    // Keep in sync every 30s in case of drift
+    setInterval(()=>{
+      if(vPri && vOvl && Math.abs(vPri.currentTime - vOvl.currentTime) > 0.5){
+        vOvl.currentTime = vPri.currentTime;
+      }
+    }, 30000);
+  }
+})();
+
+// Panel 2: admin-controlled video
+B.refreshHero=function(){
+  const h=B.getHero();
+  const src2 = h.video2;
+  if(!src2 || src2==='v2.mp4') return; // keep fallback image
+  const container=document.getElementById('heroVidPanel2');
+  const fb=document.getElementById('heroFb2');
+  // Remove any previously injected video
+  const existing=container.querySelector('video');
+  if(existing) existing.remove();
+  const v=document.createElement('video');
+  v.src=src2; v.autoplay=true; v.loop=true; v.muted=true; v.playsInline=true;
+  v.className='vid-primary';
+  v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1;';
+  v.addEventListener('loadeddata',()=>{ if(fb) fb.style.display='none'; });
+  v.addEventListener('error',()=>v.remove());
+  container.appendChild(v);
+};
+B.refreshHero();
+
+/* Featured cars: horizontal scroll, first 10 */
+function renderFeatured(){
+  const track=document.getElementById('featuredCarsGrid');
+  track.innerHTML='';
+  B.ALL_CARS.slice(0,10).forEach(car=>{
+    const card=document.createElement('div');card.className='feat-car';
+    card.innerHTML=`
+      <div class="feat-car-img">
+        <img src="${car.img}" alt="${car.name}" onerror="this.style.display='none'">
+        <div class="feat-car-img-grad"></div>
+      </div>
+      <div class="feat-car-body">
+        <div class="feat-car-brand">${car.brand}</div>
+        <div class="feat-car-name">${car.name}</div>
+        <div class="feat-car-price">${B.fmt(car.price)}</div>
+        <div class="feat-car-cta">View details →</div>
+      </div>`;
+    card.addEventListener('click',()=>openCarModal(car));
+    track.appendChild(card);
+  });
+}
+renderFeatured();
+
+/* News teaser */
+function renderNewsTeaser(){
+  const grid=document.getElementById('newsTeaserGrid');
+  const news=B.getNews().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,3);
+  grid.innerHTML='';
+  news.forEach(item=>{
+    const card=document.createElement('div');card.className='ntc';
+    card.innerHTML=`
+      <div class="ntc-img"><img src="${item.imageUrl||''}" alt="${item.title}" onerror="this.parentElement.style.display='none'"></div>
+      <div class="ntc-body">
+        <div class="ntc-cat">${item.category||'News'}</div>
+        <div class="ntc-title">${item.title}</div>
+        <div class="ntc-date">${item.date||''}</div>
+      </div>`;
+    card.addEventListener('click',()=>location.href='news.html');
+    grid.appendChild(card);
+  });
+}
+B.refreshNews=renderNewsTeaser;
+renderNewsTeaser();
+
+/* Join circle */
+document.getElementById('joinCircleBtn').addEventListener('click',()=>B.openAuth('signup'));
+
+/* Car modal */
+function openCarModal(car){
+  selectedProduct=car;
+  document.getElementById('productModalImg').innerHTML=`<img src="${car.img}" alt="${car.name}" onerror="this.style.display='none'" style="width:100%;max-height:320px;object-fit:cover;display:block;">`;
+  document.getElementById('productModalName').textContent=car.brand+' '+car.name;
+  document.getElementById('productModalPrice').textContent=B.fmt(car.price);
+  document.getElementById('productModalDesc').textContent=car.desc;
+  document.getElementById('productModal').style.display='flex';
+}
+document.getElementById('closeProductModal').addEventListener('click',()=>document.getElementById('productModal').style.display='none');
+document.getElementById('productModal').addEventListener('click',e=>{if(e.target.id==='productModal')e.target.style.display='none';});
+document.getElementById('productModalBuyBtn').addEventListener('click',()=>{
+  const cur=B.getCurrentUser();
+  if(!cur){document.getElementById('productModal').style.display='none';B.openAuth('login');return;}
+  document.getElementById('productModal').style.display='none';
+  openCheckout(selectedProduct);
+});
+
+/* Checkout */
+function openCheckout(p){
+  document.getElementById('checkoutSummary').innerHTML='Simulated order for <strong>'+p.brand+' '+p.name+'</strong> — <strong>'+B.fmt(p.price)+'</strong>';
+  ['checkoutGlobalError','checkoutGlobalSuccess','cardNameError','cardNumberError','cardExpiryError','cardCvvError'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='';});
+  ['cardName','cardNumber','cardExpiry','cardCvv'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('checkoutModal').style.display='flex';
+}
+document.getElementById('closeCheckoutModal').addEventListener('click',()=>document.getElementById('checkoutModal').style.display='none');
+document.getElementById('checkoutModal').addEventListener('click',e=>{if(e.target.id==='checkoutModal')e.target.style.display='none';});
+const cardNumber=document.getElementById('cardNumber'),cardExpiry=document.getElementById('cardExpiry');
+cardNumber.addEventListener('input',()=>{let v=cardNumber.value.replace(/\D/g,'').substring(0,16);const p=[];for(let i=0;i<v.length;i+=4)p.push(v.substring(i,i+4));cardNumber.value=p.join(' ');});
+cardExpiry.addEventListener('input',()=>{let v=cardExpiry.value.replace(/\D/g,'').substring(0,4);if(v.length>=3)v=v.substring(0,2)+'/'+v.substring(2);cardExpiry.value=v;});
+document.getElementById('placeOrderBtn').addEventListener('click',()=>{
+  const name=document.getElementById('cardName').value.trim();
+  const num=document.getElementById('cardNumber').value.replace(/\s+/g,'');
+  const exp=document.getElementById('cardExpiry').value.trim();
+  const cvv=document.getElementById('cardCvv').value.trim();
+  let err=false;
+  if(!name){document.getElementById('cardNameError').textContent='Name is required.';err=true;}
+  if(!/^\d{16}$/.test(num)){document.getElementById('cardNumberError').textContent='Enter a 16-digit card number.';err=true;}
+  if(!/^\d{2}\/\d{2}$/.test(exp)){document.getElementById('cardExpiryError').textContent='Use MM/YY format.';err=true;}
+  if(!/^\d{3,4}$/.test(cvv)){document.getElementById('cardCvvError').textContent='Enter a valid CVV.';err=true;}
+  if(err)return;
+  const cur=B.getCurrentUser();if(!cur||!selectedProduct){document.getElementById('checkoutGlobalError').textContent='Something went wrong.';return;}
+  const orders=B.getOrders();
+  orders.push({id:B.genId('order'),userId:cur.id,productId:selectedProduct.id,price:selectedProduct.price,createdAt:new Date().toISOString()});
+  B.setOrders(orders);
+  document.getElementById('checkoutGlobalSuccess').textContent='Order placed successfully!';
+  setTimeout(()=>document.getElementById('checkoutModal').style.display='none',700);
+});
+
+/* Scroll-triggered reveal */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(22px)';
+  el.style.transition='opacity 0.75s ease, transform 0.75s ease';
+  obs.observe(el);
+});
+})();
+</script>
+</body>
+</html>

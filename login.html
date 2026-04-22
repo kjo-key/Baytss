@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAYTSS | Sign In</title>
+<link rel="stylesheet" href="baytss.css">
+<style>
+body { overflow:hidden; }
+.login-page {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.login-bg {
+  position:fixed; inset:0; z-index:0;
+  background:radial-gradient(ellipse at 70% 40%, rgba(200,135,26,0.18) 0%, transparent 60%),
+             radial-gradient(ellipse at 20% 80%, rgba(160,100,10,0.12) 0%, transparent 50%),
+             linear-gradient(160deg, #0a0804 0%, #140e06 50%, #0a0804 100%);
+}
+[data-theme="light"] .login-bg {
+  background:radial-gradient(ellipse at 70% 40%, rgba(200,135,26,0.14) 0%, transparent 60%),
+             linear-gradient(160deg, #fdf8f0 0%, #f5ead8 50%, #fdf8f0 100%);
+}
+.login-bg-img {
+  position:fixed; inset:0; z-index:0;
+  background:url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80&auto=format&fit=crop') center/cover no-repeat;
+  opacity:0.12;
+}
+[data-theme="light"] .login-bg-img { opacity:0.07; }
+
+.login-card {
+  position:relative; z-index:2;
+  width:100%; max-width:460px;
+  background:var(--panel);
+  border:1px solid var(--border2);
+  border-radius:16px;
+  padding:3rem 3rem 2.5rem;
+  box-shadow:0 40px 100px rgba(0,0,0,0.6);
+  animation:fadeUp 0.6s ease both;
+}
+[data-theme="light"] .login-card { box-shadow:0 40px 100px rgba(80,40,0,0.15); }
+
+.login-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.9rem; font-weight:700; letter-spacing:10px;
+  text-transform:uppercase; text-align:center;
+  background:linear-gradient(135deg, #f0c060 0%, #e0a030 45%, #c8871a 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:0.4rem; display:block; text-decoration:none;
+}
+[data-theme="light"] .login-logo {
+  background:linear-gradient(135deg, #8a5008 0%, #a06010 45%, #c07820 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.login-tagline {
+  text-align:center; font-size:0.6rem; letter-spacing:3px; text-transform:uppercase;
+  color:var(--text3); margin-bottom:2.5rem;
+}
+.login-divider {
+  display:flex; align-items:center; gap:1rem;
+  font-size:0.6rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text3); margin:1rem 0;
+}
+.login-divider::before, .login-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.login-title { font-family:'Playfair Display',serif; font-size:1.7rem; color:var(--text); margin-bottom:0.3rem; }
+.login-subtitle { font-size:0.78rem; color:var(--text2); margin-bottom:1.6rem; }
+
+.login-toggle {
+  display:flex; gap:0; margin-bottom:1.8rem;
+  border:1px solid var(--border2); border-radius:3px; overflow:hidden;
+}
+.login-toggle-btn {
+  flex:1; padding:0.55rem; border:none;
+  background:transparent; color:var(--text3);
+  font-family:'Jost',sans-serif; font-size:0.68rem; letter-spacing:1.5px;
+  text-transform:uppercase; font-weight:600; cursor:pointer; transition:all 0.25s;
+}
+.login-toggle-btn.active {
+  background:linear-gradient(135deg, var(--amber2), var(--amber));
+  color:#0a0804;
+}
+[data-theme="light"] .login-toggle-btn.active { color:#fff; }
+
+.login-footer-link {
+  text-align:center; margin-top:1.2rem;
+  font-size:0.72rem; color:var(--text3);
+}
+.login-footer-link a { color:var(--amber2); text-decoration:none; }
+.login-footer-link a:hover { text-decoration:underline; }
+
+.back-home {
+  position:fixed; top:1.5rem; left:1.5rem; z-index:10;
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.65rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text3); text-decoration:none; font-family:'Jost',sans-serif;
+  transition:color 0.2s;
+}
+.back-home:hover { color:var(--amber2); }
+.back-home svg { opacity:0.6; }
+
+.theme-corner {
+  position:fixed; top:1.5rem; right:1.5rem; z-index:10;
+}
+</style>
+</head>
+<body>
+
+<div class="login-bg"></div>
+<div class="login-bg-img"></div>
+
+<a class="back-home" href="index.html">
+  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+  Back to Baytss
+</a>
+
+<button class="theme-toggle theme-corner" id="themeBtn" title="Toggle theme">☀</button>
+
+<div class="login-page">
+  <div class="login-card">
+    <a class="login-logo" href="index.html">BAYTSS</a>
+    <div class="login-tagline">Luxury Atelier — Est. 2024</div>
+
+    <div class="login-toggle">
+      <button class="login-toggle-btn active" id="toggleLoginBtn">Sign In</button>
+      <button class="login-toggle-btn" id="toggleSignupBtn">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="login-title">Welcome Back</div>
+      <div class="login-subtitle">Access your Baytss atelier experience.</div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" autocomplete="email"><div class="form-error" id="loginEmailError"></div></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPassword" autocomplete="current-password"><div class="form-error" id="loginPasswordError"></div></div>
+      <div id="loginGlobalError" class="form-error"></div>
+      <div id="loginGlobalSuccess" class="form-success"></div>
+      <button class="primary-btn" id="loginSubmitBtn" style="width:100%;margin-top:0.6rem;padding:0.85rem">Sign In</button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signupForm" style="display:none;">
+      <div class="login-title">Join Baytss</div>
+      <div class="login-subtitle">Create your member account to access the full atelier experience.</div>
+      <div class="form-group"><label>Full Name</label><input type="text" id="signupName" autocomplete="name"><div class="form-error" id="signupNameError"></div></div>
+      <div class="form-group"><label>City / Location</label><input type="text" id="signupLocation" autocomplete="address-level1"><div class="form-error" id="signupLocationError"></div></div>
+      <div class="form-group"><label>Short Bio</label><textarea id="signupBio" style="min-height:60px"></textarea><div class="form-error" id="signupBioError"></div></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="signupEmail" autocomplete="email"><div class="form-error" id="signupEmailError"></div></div>
+      <div class="form-group"><label>Password <span style="color:var(--text3);font-size:0.65em">(min 6 characters)</span></label><input type="password" id="signupPassword" autocomplete="new-password"><div class="form-error" id="signupPasswordError"></div></div>
+      <div id="signupGlobalError" class="form-error"></div>
+      <div id="signupGlobalSuccess" class="form-success"></div>
+      <button class="primary-btn" id="signupSubmitBtn" style="width:100%;margin-top:0.6rem;padding:0.85rem">Create Account</button>
+    </div>
+
+    <div class="login-footer-link">
+      <a href="index.html">Continue browsing without an account →</a>
+    </div>
+  </div>
+</div>
+
+<script src="baytss_shared.js"></script>
+<script>
+(function(){
+  const B = window.BAYTSS;
+
+  // Check if already logged in
+  if(B.getCurrentUser()) { window.location.href = 'index.html'; }
+
+  // Toggle between login and signup
+  const toggleLogin  = document.getElementById('toggleLoginBtn');
+  const toggleSignup = document.getElementById('toggleSignupBtn');
+  const loginForm    = document.getElementById('loginForm');
+  const signupForm   = document.getElementById('signupForm');
+
+  toggleLogin.addEventListener('click', () => {
+    toggleLogin.classList.add('active'); toggleSignup.classList.remove('active');
+    loginForm.style.display='block'; signupForm.style.display='none';
+  });
+  toggleSignup.addEventListener('click', () => {
+    toggleSignup.classList.add('active'); toggleLogin.classList.remove('active');
+    signupForm.style.display='block'; loginForm.style.display='none';
+  });
+
+  function clearErrors(...ids){ ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=''; }); }
+
+  // LOGIN
+  document.getElementById('loginSubmitBtn').addEventListener('click', () => {
+    clearErrors('loginEmailError','loginPasswordError','loginGlobalError','loginGlobalSuccess');
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const pass  = document.getElementById('loginPassword').value;
+    if(!B.validateEmail(email)){ document.getElementById('loginEmailError').textContent='Please enter a valid email.'; return; }
+    if(!B.validatePass(pass)){ document.getElementById('loginPasswordError').textContent='Password must be at least 6 characters.'; return; }
+    const users = B.getUsers();
+    const user  = users.find(u => u.email===email && u.password===pass);
+    if(!user){ document.getElementById('loginGlobalError').textContent='Invalid email or password.'; return; }
+    B.setCurrentUser({id:user.id, email:user.email});
+    document.getElementById('loginGlobalSuccess').textContent='Welcome back. Redirecting…';
+    setTimeout(() => window.location.href='index.html', 600);
+  });
+
+  // Allow Enter key
+  ['loginEmail','loginPassword'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginSubmitBtn').click(); });
+  });
+
+  // SIGNUP
+  document.getElementById('signupSubmitBtn').addEventListener('click', () => {
+    clearErrors('signupNameError','signupLocationError','signupBioError','signupEmailError','signupPasswordError','signupGlobalError','signupGlobalSuccess');
+    const name     = document.getElementById('signupName').value.trim();
+    const location = document.getElementById('signupLocation').value.trim();
+    const bio      = document.getElementById('signupBio').value.trim();
+    const email    = document.getElementById('signupEmail').value.trim().toLowerCase();
+    const pass     = document.getElementById('signupPassword').value;
+    if(!name)               { document.getElementById('signupNameError').textContent='Name is required.'; return; }
+    if(!location)           { document.getElementById('signupLocationError').textContent='Location is required.'; return; }
+    if(!bio)                { document.getElementById('signupBioError').textContent='Bio is required.'; return; }
+    if(!B.validateEmail(email)) { document.getElementById('signupEmailError').textContent='Please enter a valid email.'; return; }
+    if(!B.validatePass(pass))   { document.getElementById('signupPasswordError').textContent='Password must be at least 6 characters.'; return; }
+    const users = B.getUsers();
+    if(users.find(u=>u.email===email)){ document.getElementById('signupGlobalError').textContent='An account with this email already exists.'; return; }
+    const nu = {id:B.genId('user'), name, email, password:pass, location, bio, createdAt:new Date().toISOString()};
+    users.push(nu); B.setUsers(users); B.setCurrentUser({id:nu.id, email:nu.email});
+    document.getElementById('signupGlobalSuccess').textContent='Account created. Welcome to Baytss. Redirecting…';
+    setTimeout(() => window.location.href='index.html', 700);
+  });
+})();
+</script>
+</body>
+</html>
