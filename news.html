@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAYTSS | Journal & Careers</title>
+<link rel="stylesheet" href="baytss.css">
+<style>
+.page-hero {
+  width:100%; padding:4.5rem 6% 3rem;
+  background:linear-gradient(160deg, var(--bg2) 0%, var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+}
+.page-hero-eyebrow { font-size:0.6rem; letter-spacing:5px; text-transform:uppercase; color:var(--amber); font-weight:600; margin-bottom:0.6rem; }
+.page-hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,4vw,3.8rem); font-weight:700; color:var(--text); line-height:1.1; margin-bottom:0.5rem; }
+.page-hero p { font-size:0.85rem; color:var(--text2); max-width:520px; line-height:1.85; }
+
+/* Page tabs */
+.page-tabs {
+  width:92%; max-width:1400px; margin:2.5rem auto 0;
+  display:flex; gap:0.4rem; border-bottom:1px solid var(--border);
+  padding-bottom:0;
+}
+.page-tab {
+  padding:0.6rem 1.4rem; border:none; background:transparent;
+  cursor:pointer; font-family:'Jost',sans-serif;
+  font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; font-weight:600;
+  color:var(--text3); transition:all 0.2s; border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+}
+.page-tab:hover { color:var(--text2); }
+.page-tab.active { color:var(--amber2); border-bottom-color:var(--amber2); }
+
+/* Sections */
+.page-section { display:none; }
+.page-section.active { display:block; }
+
+/* NEWS LAYOUT */
+.news-layout { display:grid; grid-template-columns:1.3fr 1fr; gap:2rem; }
+.news-featured {
+  background:var(--panel); border-radius:12px; overflow:hidden;
+  border:1px solid var(--border); display:flex; flex-direction:column;
+  transition:border-color 0.3s; cursor:pointer;
+}
+.news-featured:hover { border-color:var(--border2); }
+.news-featured-img { width:100%; height:280px; background:var(--panel2); overflow:hidden; }
+.news-featured-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s; filter:brightness(0.87); }
+.news-featured:hover .news-featured-img img { transform:scale(1.03); filter:brightness(0.95); }
+.news-featured-body { padding:2rem; flex:1; display:flex; flex-direction:column; gap:0.7rem; }
+.news-featured-cat { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--amber); font-weight:600; }
+.news-featured-title { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--text); line-height:1.3; }
+.news-featured-meta { display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text3); }
+.news-featured-desc { font-size:0.8rem; color:var(--text2); line-height:1.85; flex:1; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+
+.news-secondary-grid { display:flex; flex-direction:column; gap:1rem; }
+.news-card {
+  background:var(--panel); border-radius:10px; padding:1.3rem;
+  border:1px solid var(--border); cursor:pointer;
+  display:flex; gap:1.2rem; transition:all 0.3s; align-items:flex-start;
+}
+.news-card:hover { border-color:var(--border2); transform:translateX(4px); }
+.news-card-img { width:90px; height:70px; border-radius:6px; overflow:hidden; flex-shrink:0; }
+.news-card-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.news-card-body { flex:1; }
+.news-card-cat { font-size:0.58rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--amber); font-weight:600; margin-bottom:0.3rem; }
+.news-card-title { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--text); line-height:1.35; margin-bottom:0.3rem; }
+.news-card-date { font-size:0.68rem; color:var(--text3); }
+
+/* NEWS ARTICLE MODAL */
+.article-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.97); z-index:3200; overflow-y:auto;
+  backdrop-filter:blur(16px);
+}
+[data-theme="light"] .article-modal { background:rgba(253,248,240,0.97); }
+.article-modal-content {
+  background:var(--panel); max-width:720px; width:90%;
+  margin:3rem auto; border-radius:14px;
+  border:1px solid var(--border2); overflow:hidden; position:relative;
+}
+.article-modal-hero { width:100%; height:300px; overflow:hidden; }
+.article-modal-hero img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(0.88); }
+.article-modal-body { padding:2.5rem; }
+.article-modal-cat { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--amber); margin-bottom:0.5rem; }
+.article-modal-title { font-family:'Playfair Display',serif; font-size:2rem; color:var(--text); margin-bottom:0.5rem; line-height:1.25; }
+.article-modal-date { font-size:0.72rem; color:var(--text3); margin-bottom:1.5rem; }
+.article-modal-text { font-size:0.88rem; color:var(--text2); line-height:2.05; }
+.close-article-btn { background:var(--panel2); border:1px solid var(--border); font-size:1.2rem; cursor:pointer; width:38px; height:38px; border-radius:50%; position:absolute; top:16px; right:16px; color:var(--text2); display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+.close-article-btn:hover { background:var(--border); color:var(--text); }
+
+/* CAREERS */
+.career-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1.5rem; }
+.career-card {
+  background:var(--panel); border-radius:12px; padding:1.8rem;
+  border:1px solid var(--border); display:flex; flex-direction:column; gap:0.55rem;
+  transition:all 0.3s;
+}
+.career-card:hover { border-color:var(--border2); background:var(--panel2); transform:translateY(-3px); }
+.career-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:var(--text); }
+.career-tag { font-size:0.6rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--amber); font-weight:600; }
+.career-location { font-size:0.78rem; color:var(--text2); display:flex; align-items:center; gap:0.3rem; }
+.career-date { font-size:0.7rem; color:var(--text3); font-style:italic; }
+.career-desc { font-size:0.8rem; color:var(--text2); line-height:1.8; }
+.career-apply-form { margin-top:1.25rem; display:flex; flex-direction:column; gap:0.85rem; }
+.career-apply-form label { font-size:0.75rem; color:var(--text2); font-weight:600; }
+.career-apply-form input,
+.career-apply-form textarea { width:100%; border:1px solid var(--border2); border-radius:8px; padding:0.9rem 1rem; background:var(--bg2); color:var(--text); font-family:'Jost',sans-serif; font-size:0.85rem; }
+.career-apply-form textarea { min-height:120px; resize:vertical; }
+.career-apply-form input[type=file] { padding:0.55rem 0.8rem; background:transparent; }
+.career-apply-form small { font-size:0.72rem; color:var(--text3); }
+.career-submit-row { display:flex; justify-content:flex-end; gap:0.75rem; flex-wrap:wrap; }
+.status-pill { display:inline-flex; align-items:center; padding:0.45rem 0.8rem; border-radius:999px; background:rgba(200,135,26,0.12); color:var(--amber2); font-size:0.78rem; }
+
+@media(max-width:900px){
+  .news-layout { grid-template-columns:1fr; }
+  .news-featured-img { height:220px; }
+}
+@media(max-width:600px){
+  .news-card { flex-direction:column; }
+  .news-card-img { width:100%; height:150px; }
+  .career-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="index.html">BAYTSS</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="new-arrivals.html">New Arrivals</a></li>
+    <li><a href="history.html">Chronicle</a></li>
+    <li><a href="store.html">Atelier</a></li>
+    <li><a href="news.html" class="active">Journal</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-user-pill" id="navUserPill"><span class="nav-user-name" id="navUserName"></span><button class="nav-logout-btn" id="navLogoutBtn">Sign out</button></div>
+    <button class="login-btn" id="navLoginBtn">Sign In</button>
+    <button class="signup-btn" id="navSignupBtn">Join</button>
+    <button class="theme-toggle" id="themeBtn">☀</button>
+  </div>
+</nav>
+
+<div class="page-hero fade-up">
+  <div class="page-hero-eyebrow">Baytss Journal</div>
+  <h1>Dispatches, Awards<br>&amp; Opportunities</h1>
+  <p>News from the atelier, recognition from the industry, and open roles for those who share our conviction.</p>
+</div>
+
+<div class="page-tabs">
+  <button class="page-tab active" data-section="newsSection">Journal &amp; Awards</button>
+  <button class="page-tab" data-section="careersSection">Careers &amp; Collaborations</button>
+</div>
+
+<!-- NEWS SECTION -->
+<section class="section-wrap page-section active" id="newsSection">
+  <div id="newsContentWrapper"></div>
+</section>
+
+<!-- CAREERS SECTION -->
+<section class="section-wrap page-section" id="careersSection">
+  <div class="section-eyebrow">Collaborate</div>
+  <h2 class="section-title">Open Roles</h2>
+  <p class="section-subtitle">Opportunities for those who believe in the value of precision and deliberate craft.</p>
+  <div class="section-line"></div>
+  <div id="careersWrapper"></div>
+</section>
+
+<!-- ARTICLE MODAL -->
+<div class="article-modal" id="articleModal">
+  <div class="article-modal-content">
+    <button class="close-article-btn" id="closeArticleModal">&times;</button>
+    <div class="article-modal-hero"><img id="articleModalImg" src="" alt=""></div>
+    <div class="article-modal-body">
+      <div class="article-modal-cat" id="articleModalCat"></div>
+      <div class="article-modal-title" id="articleModalTitle"></div>
+      <div class="article-modal-date" id="articleModalDate"></div>
+      <div class="article-modal-text" id="articleModalText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay-modal" id="authModal">
+  <div class="auth-card">
+    <button class="close-btn-x" id="closeAuthModal">&times;</button>
+    <span class="auth-card-logo">BAYTSS</span>
+    <h2 id="authTitle">Welcome Back</h2>
+    <p class="auth-subtitle" id="authSubtitle"></p>
+    <div id="authNameGroup" class="form-group hidden"><label>Full Name</label><input type="text" id="authName"><div class="form-error" id="authNameError"></div></div>
+    <div id="authLocationGroup" class="form-group hidden"><label>City / Location</label><input type="text" id="authLocation"><div class="form-error" id="authLocationError"></div></div>
+    <div id="authBioGroup" class="form-group hidden"><label>Short Bio</label><textarea id="authBio"></textarea><div class="form-error" id="authBioError"></div></div>
+    <div class="form-group"><label>Email</label><input type="email" id="authEmail"><div class="form-error" id="authEmailError"></div></div>
+    <div class="form-group"><label>Password</label><input type="password" id="authPassword"><div class="form-error" id="authPasswordError"></div></div>
+    <div id="authGlobalError" class="form-error"></div><div id="authGlobalSuccess" class="form-success"></div>
+    <button class="primary-btn" id="authSubmitBtn" style="width:100%;margin-top:0.5rem">Sign In</button>
+    <div class="auth-toggle"><span id="authToggleText">New to Baytss?</span> <button id="authToggleBtn">Create account</button></div>
+  </div>
+</div>
+
+<button class="admin-fab hidden" id="adminFab"><div class="admin-fab-dot"></div>Admin</button>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <button class="admin-close-btn" id="closeAdminPanel">&times;</button>
+    <div class="admin-header"><div><h2>Baytss Admin Console</h2><div class="text-muted">Signed in as <span id="adminEmailLabel"></span></div></div></div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="newsTab">News</button>
+      <button class="admin-tab-btn" data-tab="carsTab">Cars</button>
+      <button class="admin-tab-btn" data-tab="careerTab">Careers</button>
+      <button class="admin-tab-btn" data-tab="applicationsTab">Applications</button>
+      <button class="admin-tab-btn" data-tab="historyTab">History</button>
+      <button class="admin-tab-btn" data-tab="usersTab">Users</button>
+      <button class="admin-tab-btn" data-tab="ordersTab">Orders</button>
+    </div>
+    <div class="admin-section active" id="newsTab">
+      <h3>Publish Article</h3><span class="text-muted">Add a new article to the Journal.</span>
+      <div class="form-group mt-2"><label>Title</label><input type="text" id="adminNewsTitleInput"></div>
+      <div class="form-group"><label>Image URL</label><input type="text" id="adminNewsImageInput"></div>
+      <div class="form-row"><div class="form-group"><label>Category</label><input type="text" id="adminNewsCategoryInput" placeholder="Event · Award · Launch"></div><div class="form-group"><label>Date</label><input type="date" id="adminNewsDateInput"></div></div>
+      <div class="form-group"><label>Content</label><textarea id="adminNewsDescInput"></textarea></div>
+      <div id="adminNewsMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminNewsAdd">Publish Article</button>
+      <div class="admin-list" id="adminNewsList"></div>
+    </div>
+    <div class="admin-section" id="carsTab">
+      <h3>Add New Car</h3><span class="text-muted">Add a new automobile to the Baytss catalog.</span>
+      <div class="form-row mt-2"><div class="form-group"><label>Brand</label><input type="text" id="adminCarBrandInput" placeholder="e.g., Ferrari"></div><div class="form-group"><label>Model Name</label><input type="text" id="adminCarNameInput" placeholder="e.g., LaFerrari"></div></div>
+      <div class="form-row"><div class="form-group"><label>Price (€)</label><input type="number" id="adminCarPriceInput" placeholder="3000000"></div><div class="form-group"><label>Image Filename</label><input type="text" id="adminCarImageInput" placeholder="laferrari.png"></div></div>
+      <div class="form-group"><label>Description</label><textarea id="adminCarDescInput" placeholder="Detailed description of the automobile..."></textarea></div>
+      <div id="adminCarMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminCarAdd">Add Car</button>
+      <div class="admin-list" id="adminCarsList"></div>
+    </div>
+    <div class="admin-section" id="careerTab">
+      <h3>Post Career Role</h3><span class="text-muted">Create a new role or collaboration opportunity.</span>
+      <div class="form-group mt-2"><label>Role Title</label><input type="text" id="adminCareerTitleInput"></div>
+      <div class="form-row"><div class="form-group"><label>Location</label><input type="text" id="adminCareerLocationInput"></div><div class="form-group"><label>Posted Date</label><input type="date" id="adminCareerDateInput"></div></div>
+      <div class="form-group"><label>Description</label><textarea id="adminCareerDescInput"></textarea></div>
+      <div id="adminCareerMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminCareerAdd">Post Role</button>
+      <div class="admin-list" id="adminCareerList"></div>
+    </div>
+    <div class="admin-section" id="applicationsTab">
+      <h3>Candidate Applications</h3><span class="text-muted">Review submitted candidate statements and uploaded resumes.</span>
+      <div class="admin-list" id="adminApplicationsList"></div>
+    </div>
+    <div class="admin-section" id="historyTab"><h3>History</h3><div class="admin-list" id="adminHistoryList"></div></div>
+    <div class="admin-section" id="usersTab"><h3>Members</h3><div class="admin-list" id="adminUsersList"></div></div>
+    <div class="admin-section" id="ordersTab"><h3>Orders</h3><div class="admin-list" id="adminOrdersList"></div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-main">
+    <div><div class="footer-logo">BAYTSS</div><p class="footer-tagline">A curated universe of luxury. Born from the belief that true excellence requires no justification.</p>
+    <div class="footer-social"><a class="footer-social-link" href="#">IG</a><a class="footer-social-link" href="#">X</a><a class="footer-social-link" href="#">LI</a><a class="footer-social-link" href="#">YT</a></div></div>
+    <div class="footer-col"><h4>Navigate</h4><ul><li><a href="index.html">Home</a></li><li><a href="store.html">Atelier</a></li><li><a href="history.html">Chronicle</a></li><li><a href="news.html">Journal</a></li></ul></div>
+    <div class="footer-col"><h4>Atelier</h4><ul><li><a href="#">Bespoke Orders</a></li><li><a href="#">Private Viewings</a></li><li><a href="#">Concierge</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><div class="footer-contact-item"><strong>Enquiries</strong>atelier@baytss.com</div><div class="footer-contact-item"><strong>Press</strong>press@baytss.com</div></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© <span id="footerYear"></span> Baytss Luxury Atelier. All rights reserved.</div><div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+</footer>
+
+<script src="baytss_shared.js"></script>
+<script>
+(function(){
+  const B = window.BAYTSS;
+
+  // Tab switching
+  document.querySelectorAll('.page-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-section')).classList.add('active');
+    });
+  });
+
+  // Render news
+  function renderNews(){
+    const wrapper = document.getElementById('newsContentWrapper');
+    const news = B.getNews().slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    wrapper.innerHTML = '';
+    if(!news.length){
+      wrapper.innerHTML = `<div class="empty-state">No articles published yet.<span>Check back soon.</span></div>`; return;
+    }
+    const layout = document.createElement('div'); layout.className = 'news-layout';
+    const feat = news[0];
+    const featEl = document.createElement('article'); featEl.className = 'news-featured';
+    featEl.innerHTML = `
+      <div class="news-featured-img"><img src="${feat.imageUrl||''}" alt="${feat.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80'"></div>
+      <div class="news-featured-body">
+        <div class="news-featured-cat">${feat.category||'News'}</div>
+        <h3 class="news-featured-title">${feat.title}</h3>
+        <div class="news-featured-meta"><span>${feat.date||''}</span><span>Featured</span></div>
+        <p class="news-featured-desc">${feat.description||''}</p>
+      </div>`;
+    featEl.addEventListener('click', ()=>openArticle(feat));
+
+    const grid = document.createElement('div'); grid.className = 'news-secondary-grid';
+    news.slice(1).forEach(item=>{
+      const card = document.createElement('article'); card.className = 'news-card';
+      card.innerHTML = `
+        <div class="news-card-img"><img src="${item.imageUrl||''}" alt="${item.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=900&q=80'"></div>
+        <div class="news-card-body">
+          <div class="news-card-cat">${item.category||'News'}</div>
+          <div class="news-card-title">${item.title}</div>
+          <div class="news-card-date">${item.date||''}</div>
+        </div>`;
+      card.addEventListener('click', ()=>openArticle(item));
+      grid.appendChild(card);
+    });
+    layout.appendChild(featEl); layout.appendChild(grid);
+    wrapper.appendChild(layout);
+  }
+  B.refreshNews = renderNews;
+  renderNews();
+
+  function openArticle(item){
+    document.getElementById('articleModalImg').src = item.imageUrl||'';
+    document.getElementById('articleModalImg').alt = item.title;
+    document.getElementById('articleModalCat').textContent = item.category||'News';
+    document.getElementById('articleModalTitle').textContent = item.title;
+    document.getElementById('articleModalDate').textContent = item.date||'';
+    document.getElementById('articleModalText').textContent = item.description||'';
+    document.getElementById('articleModal').style.display = 'block';
+  }
+  document.getElementById('closeArticleModal').addEventListener('click', ()=>document.getElementById('articleModal').style.display='none');
+  document.getElementById('articleModal').addEventListener('click', e=>{ if(e.target.id==='articleModal') e.target.style.display='none'; });
+
+  // Render careers
+  function renderCareers(){
+    const wrapper = document.getElementById('careersWrapper');
+    const careers = B.getCareers().slice().sort((a,b)=>new Date(b.postedDate||0)-new Date(a.postedDate||0));
+    wrapper.innerHTML = '';
+    if(!careers.length){
+      wrapper.innerHTML = `<div class="empty-state">No open roles at this time.<span>Check back soon.</span></div>`; return;
+    }
+    const grid = document.createElement('div'); grid.className = 'career-grid';
+    const cur = B.getCurrentUser();
+    careers.forEach(c=>{
+      const card = document.createElement('article'); card.className = 'career-card';
+      card.innerHTML = `
+        <div class="career-title">${c.title}</div>
+        <div class="career-tag">Baytss Opportunity</div>
+        <div class="career-location">📍 ${c.location||'Location not specified'}</div>
+        <div class="career-date">Posted: ${c.postedDate||''}</div>
+        <div class="career-desc">${c.description||''}</div>`;
+
+      const apps = B.getApps().filter(a=>a.careerId===c.id);
+      const applicant = cur ? apps.find(a=>a.userId===cur.id) : null;
+      const appEmail = cur ? cur.email : '';
+      const formWrapper = document.createElement('div');
+      formWrapper.className = 'career-apply-form';
+
+      if(applicant){
+        formWrapper.innerHTML = `
+          <span class="status-pill">Status: ${applicant.status||'Pending'}</span>
+          <div style="color:var(--text2);font-size:0.9rem;">Submitted on ${new Date(applicant.createdAt).toLocaleDateString()}</div>
+          <div style="font-size:0.9rem;color:var(--text2);">Email: ${applicant.applicantEmail||appEmail}</div>
+          <div style="font-size:0.9rem;color:var(--text2);">Statement: ${applicant.statement ? applicant.statement.substring(0,220) + (applicant.statement.length>220 ? '…' : '') : 'Not provided.'}</div>
+          <a href="${applicant.resumeData}" target="_blank" rel="noreferrer" style="color:var(--amber2);text-decoration:underline;font-size:0.9rem;">Open uploaded resume</a>
+        `;
+      } else {
+        formWrapper.innerHTML = `
+          <label>Email</label>
+          <input type="email" class="career-apply-email" placeholder="you@domain.com" value="${appEmail}">
+          <label>Statement of Interest</label>
+          <textarea class="career-apply-statement" placeholder="Why are you the right candidate? Max 500 words."></textarea>
+          <small>Maximum 500 words. Make it specific and concise.</small>
+          <label>Resume (PDF)</label>
+          <input type="file" accept="application/pdf" class="career-apply-resume">
+          <div class="career-submit-row"><button class="secondary-btn career-apply-clear" type="button">Clear</button><button class="primary-btn career-apply-submit" type="button">Submit Application</button></div>
+        `;
+      }
+
+      card.appendChild(formWrapper);
+      grid.appendChild(card);
+
+      if(!applicant){
+        const emailInput = formWrapper.querySelector('.career-apply-email');
+        const statementInput = formWrapper.querySelector('.career-apply-statement');
+        const resumeInput = formWrapper.querySelector('.career-apply-resume');
+        const submitBtn = formWrapper.querySelector('.career-apply-submit');
+        const clearBtn = formWrapper.querySelector('.career-apply-clear');
+
+        if(submitBtn){
+          submitBtn.addEventListener('click', ()=>{
+            const email = (emailInput.value || '').trim();
+            const statement = (statementInput.value || '').trim();
+            const resumeFile = resumeInput.files && resumeInput.files[0];
+            const wordCount = statement.split(/\s+/).filter(Boolean).length;
+            if(!email || !B.validateEmail(email)) return alert('Please enter a valid email address.');
+            if(!statement) return alert('Please enter your statement of interest.');
+            if(wordCount > 500) return alert('Statement must be 500 words or fewer.');
+            if(!resumeFile) return alert('Please upload your resume as a PDF.');
+            if(resumeFile.type !== 'application/pdf' && !resumeFile.name.toLowerCase().endsWith('.pdf')) return alert('Resume must be a PDF file.');
+
+            const reader = new FileReader();
+            reader.onload = function(){
+              const allApps = B.getApps();
+              allApps.push({
+                id:B.genId('app'),
+                careerId:c.id,
+                userId: cur ? cur.id : null,
+                applicantEmail: email,
+                statement: statement,
+                resumeName: resumeFile.name,
+                resumeData: reader.result,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+              });
+              B.setApps(allApps);
+              alert('Application submitted. The Baytss team will review it shortly.');
+              renderCareers();
+            };
+            reader.readAsDataURL(resumeFile);
+          });
+        }
+        if(clearBtn){
+          clearBtn.addEventListener('click', ()=>{
+            emailInput.value = appEmail;
+            statementInput.value = '';
+            resumeInput.value = '';
+          });
+        }
+      }
+    });
+    wrapper.appendChild(grid);
+  }
+  B.refreshCareers = renderCareers;
+  B._onAuthSuccess = renderCareers;
+  renderCareers();
+})();
+</script>
+</body>
+</html>

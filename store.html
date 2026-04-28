@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAYTSS | The Atelier Collection</title>
+<link rel="stylesheet" href="baytss.css">
+<style>
+.store-hero {
+  width:100%; padding:4.5rem 6% 3rem;
+  background:linear-gradient(160deg, var(--bg2) 0%, var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+}
+.store-hero-inner { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:2rem; }
+.store-hero-eyebrow { font-size:0.6rem; letter-spacing:5px; text-transform:uppercase; color:var(--amber); font-weight:600; margin-bottom:0.6rem; }
+.store-hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,4vw,3.8rem); font-weight:700; color:var(--text); line-height:1.1; margin-bottom:0.5rem; }
+.store-hero p { font-size:0.85rem; color:var(--text2); max-width:500px; line-height:1.85; }
+.store-filter-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.filter-btn {
+  padding:0.38rem 0.9rem; border-radius:2px; border:1px solid var(--border);
+  background:transparent; color:var(--text3); cursor:pointer;
+  font-family:'Jost',sans-serif; font-size:0.62rem; letter-spacing:1.5px; text-transform:uppercase; font-weight:600;
+  transition:all 0.25s;
+}
+.filter-btn:hover, .filter-btn.active { border-color:var(--amber2); color:var(--amber2); background:var(--glow); }
+
+.cards-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1.8rem;
+}
+.cars-hidden { display:none; }
+
+.show-more-banner {
+  position:relative; overflow:hidden;
+  width:100%; height:180px;
+  border-radius:12px; border:1px solid var(--border);
+  background:var(--panel); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.35s; margin-top:2rem;
+}
+.show-more-banner::before {
+  content:''; position:absolute; inset:0;
+  background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80&auto=format&fit=crop');
+  background-size:cover; background-position:center;
+  opacity:0.15; transition:opacity 0.4s;
+}
+.show-more-banner:hover::before { opacity:0.28; }
+.show-more-banner:hover { border-color:var(--border2); box-shadow:0 0 50px rgba(200,135,26,0.12); }
+.show-more-inner { position:relative; z-index:1; text-align:center; }
+.show-more-inner strong { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-style:italic; color:var(--amber2); letter-spacing:0.05rem; display:block; }
+.show-more-inner small { font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--amber); font-weight:500; }
+
+#allCarsGrid { margin-top:2.5rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1.8rem; }
+
+/* Car card styles */
+.car-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.4s ease;
+}
+.car-card:hover {
+  transform:translateY(-8px);
+  border-color:var(--border2);
+  box-shadow:0 25px 50px var(--shadow);
+}
+.card-img {
+  width:100%;
+  height:220px;
+  overflow:hidden;
+  background:linear-gradient(135deg, var(--bg2) 0%, var(--bg) 100%);
+  position:relative;
+}
+.card-img img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform 0.6s ease;
+}
+.car-card:hover .card-img img {
+  transform:scale(1.08);
+}
+.card-body {
+  padding:1.3rem 1.3rem 1.5rem;
+}
+.card-brand {
+  font-size:0.55rem;
+  letter-spacing:3.5px;
+  text-transform:uppercase;
+  color:var(--amber);
+  font-weight:600;
+  margin-bottom:0.4rem;
+}
+.card-name {
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:0.6rem;
+}
+.card-price-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:0.8rem;
+}
+.card-price {
+  font-size:0.9rem;
+  font-weight:700;
+  color:var(--amber2);
+}
+.card-cta {
+  font-size:0.55rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--text3);
+  transition:color 0.2s;
+}
+.car-card:hover .card-cta {
+  color:var(--amber2);
+}
+.card-desc {
+  font-size:0.72rem;
+  color:var(--text2);
+  line-height:1.7;
+  margin-top:0.6rem;
+  padding-top:0.6rem;
+  border-top:1px solid var(--border);
+}
+
+@media(max-width:900px){
+  .store-hero-inner { flex-direction:column; align-items:flex-start; }
+}
+@media(max-width:700px){
+  .cards-grid, #allCarsGrid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="index.html">BAYTSS</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="new-arrivals.html">New Arrivals</a></li>
+    <li><a href="history.html">Chronicle</a></li>
+    <li><a href="store.html" class="active">Atelier</a></li>
+    <li><a href="news.html">Journal</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-user-pill" id="navUserPill"><span class="nav-user-name" id="navUserName"></span><button class="nav-logout-btn" id="navLogoutBtn">Sign out</button></div>
+    <button class="login-btn" id="navLoginBtn">Sign In</button>
+    <button class="signup-btn" id="navSignupBtn">Join</button>
+    <button class="theme-toggle" id="themeBtn">☀</button>
+  </div>
+</nav>
+
+<div class="store-hero fade-up">
+  <div class="store-hero-inner">
+    <div>
+      <div class="store-hero-eyebrow">Baytss Atelier</div>
+      <h1>The Collection</h1>
+      <p>A curated selection of the world's finest automobiles — presented exclusively by the Baytss atelier. Each machine chosen by our founding council.</p>
+    </div>
+    <div class="store-filter-row" id="filterRow">
+      <button class="filter-btn active" data-brand="all">All Marques</button>
+      <button class="filter-btn" data-brand="Bugatti">Bugatti</button>
+      <button class="filter-btn" data-brand="Ferrari">Ferrari</button>
+      <button class="filter-btn" data-brand="Lamborghini">Lamborghini</button>
+      <button class="filter-btn" data-brand="McLaren">McLaren</button>
+      <button class="filter-btn" data-brand="Koenigsegg">Koenigsegg</button>
+      <button class="filter-btn" data-brand="Pagani">Pagani</button>
+      <button class="filter-btn" data-brand="Porsche">Porsche</button>
+    </div>
+  </div>
+</div>
+
+<section class="section-wrap fade-up">
+  <div id="storeCards" class="cards-grid"></div>
+  <div id="showMoreWrap">
+    <div class="show-more-banner" id="showMoreBtn">
+      <div class="show-more-inner">
+        <strong>Explore the Full Collection</strong>
+        <small>View all 20 legendary machines</small>
+      </div>
+    </div>
+  </div>
+  <div id="allCarsGrid" class="cars-hidden"></div>
+</section>
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+  <div class="modal-content">
+    <button class="close-modal-btn" id="closeProductModal">&times;</button>
+    <div class="modal-img" id="productModalImg"></div>
+    <div class="modal-detail">
+      <div class="modal-detail-label">Baytss Atelier</div>
+      <h2 id="productModalName"></h2>
+      <div class="modal-detail-price" id="productModalPrice"></div>
+      <div class="modal-detail-desc" id="productModalDesc"></div>
+      <div class="modal-actions">
+        <div class="text-muted">Simulated checkout — no real payment processed.</div>
+        <button class="primary-btn" id="productModalBuyBtn">Acquire Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal" id="checkoutModal">
+  <div class="checkout-content">
+    <button class="close-modal-btn" id="closeCheckoutModal">&times;</button>
+    <div class="checkout-header"><h3>Baytss Secure Checkout</h3><p class="text-muted">Simulated — no real payment processed.</p></div>
+    <div class="checkout-summary" id="checkoutSummary"></div>
+    <div class="form-group"><label>Name on Card</label><input type="text" id="cardName"><div class="form-error" id="cardNameError"></div></div>
+    <div class="form-group"><label>Card Number</label><input type="text" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX"><div class="form-error" id="cardNumberError"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="cardExpiry" maxlength="5" placeholder="MM/YY"><div class="form-error" id="cardExpiryError"></div></div>
+      <div class="form-group"><label>CVV</label><input type="password" id="cardCvv" maxlength="4"><div class="form-error" id="cardCvvError"></div></div>
+    </div>
+    <div id="checkoutGlobalError" class="form-error"></div>
+    <div id="checkoutGlobalSuccess" class="form-success"></div>
+    <button class="primary-btn" id="placeOrderBtn" style="width:100%;margin-top:0.5rem">Place Order</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay-modal" id="authModal">
+  <div class="auth-card">
+    <button class="close-btn-x" id="closeAuthModal">&times;</button>
+    <span class="auth-card-logo">BAYTSS</span>
+    <h2 id="authTitle">Welcome Back</h2>
+    <p class="auth-subtitle" id="authSubtitle"></p>
+    <div id="authNameGroup" class="form-group hidden"><label>Full Name</label><input type="text" id="authName"><div class="form-error" id="authNameError"></div></div>
+    <div id="authLocationGroup" class="form-group hidden"><label>City / Location</label><input type="text" id="authLocation"><div class="form-error" id="authLocationError"></div></div>
+    <div id="authBioGroup" class="form-group hidden"><label>Short Bio</label><textarea id="authBio"></textarea><div class="form-error" id="authBioError"></div></div>
+    <div class="form-group"><label>Email</label><input type="email" id="authEmail"><div class="form-error" id="authEmailError"></div></div>
+    <div class="form-group"><label>Password</label><input type="password" id="authPassword"><div class="form-error" id="authPasswordError"></div></div>
+    <div id="authGlobalError" class="form-error"></div><div id="authGlobalSuccess" class="form-success"></div>
+    <button class="primary-btn" id="authSubmitBtn" style="width:100%;margin-top:0.5rem">Sign In</button>
+    <div class="auth-toggle"><span id="authToggleText">New to Baytss?</span> <button id="authToggleBtn">Create account</button></div>
+  </div>
+</div>
+
+<button class="admin-fab hidden" id="adminFab"><div class="admin-fab-dot"></div>Admin</button>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <button class="admin-close-btn" id="closeAdminPanel">&times;</button>
+    <div class="admin-header"><div><h2>Baytss Admin Console</h2><div class="text-muted">Signed in as <span id="adminEmailLabel"></span></div></div></div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="carsTab">Cars</button>
+      <button class="admin-tab-btn" data-tab="newsTab">News</button>
+      <button class="admin-tab-btn" data-tab="careerTab">Careers</button>
+      <button class="admin-tab-btn" data-tab="historyTab">History</button>
+      <button class="admin-tab-btn" data-tab="usersTab">Users</button>
+      <button class="admin-tab-btn" data-tab="ordersTab">Orders</button>
+    </div>
+    <div class="admin-section active" id="carsTab">
+      <h3>Add New Car</h3><span class="text-muted">Add a new automobile to the Baytss catalog.</span>
+      <div class="form-row mt-2"><div class="form-group"><label>Brand</label><input type="text" id="adminCarBrandInput" placeholder="e.g., Ferrari"></div><div class="form-group"><label>Model Name</label><input type="text" id="adminCarNameInput" placeholder="e.g., LaFerrari"></div></div>
+      <div class="form-row"><div class="form-group"><label>Price (€)</label><input type="number" id="adminCarPriceInput" placeholder="3000000"></div><div class="form-group"><label>Image Filename</label><input type="text" id="adminCarImageInput" placeholder="laferrari.png"></div></div>
+      <div class="form-group"><label>Description</label><textarea id="adminCarDescInput" placeholder="Detailed description of the automobile..."></textarea></div>
+      <div id="adminCarMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminCarAdd">Add Car</button>
+      <div class="admin-list" id="adminCarsList"></div>
+    </div>
+    <div class="admin-section" id="newsTab"><h3>News</h3><div class="admin-list" id="adminNewsList"></div></div>
+    <div class="admin-section" id="careerTab"><h3>Careers</h3><div class="admin-list" id="adminCareerList"></div></div>
+    <div class="admin-section" id="historyTab">
+      <h3>Add History Entry</h3>
+      <div class="form-group mt-2"><label>Title</label><input type="text" id="adminHistTitleInput"></div>
+      <div class="form-row"><div class="form-group"><label>Year</label><input type="text" id="adminHistYearInput"></div><div class="form-group"><label>Image URL</label><input type="text" id="adminHistImageInput"></div></div>
+      <div class="form-group"><label>Short Description</label><input type="text" id="adminHistShortInput"></div>
+      <div class="form-group"><label>Full Story</label><textarea id="adminHistDescInput"></textarea></div>
+      <div id="adminHistoryMessage" class="form-success"></div>
+      <button class="primary-btn mt-2" id="adminHistoryAdd">Add Entry</button>
+      <div class="admin-list" id="adminHistoryList"></div>
+    </div>
+    <div class="admin-section" id="usersTab"><h3>Members</h3><div class="admin-list" id="adminUsersList"></div></div>
+    <div class="admin-section" id="ordersTab"><h3>Orders</h3><div class="admin-list" id="adminOrdersList"></div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-main">
+    <div><div class="footer-logo">BAYTSS</div><p class="footer-tagline">A curated universe of luxury. Every piece chosen deliberately.</p>
+    <div class="footer-social"><a class="footer-social-link" href="#">IG</a><a class="footer-social-link" href="#">X</a><a class="footer-social-link" href="#">LI</a><a class="footer-social-link" href="#">YT</a></div></div>
+    <div class="footer-col"><h4>Navigate</h4><ul><li><a href="index.html">Home</a></li><li><a href="store.html">Atelier</a></li><li><a href="history.html">Chronicle</a></li><li><a href="news.html">Journal</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Bespoke Orders</a></li><li><a href="#">Private Viewings</a></li><li><a href="#">Authentication</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><div class="footer-contact-item"><strong>Enquiries</strong>atelier@baytss.com</div><div class="footer-contact-item"><strong>Address</strong>8 Rue du Faubourg Saint-Honoré, Paris</div></div>
+  </div>
+  <div class="footer-bottom"><div class="footer-copy">© <span id="footerYear"></span> Baytss Luxury Atelier. All rights reserved.</div><div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+</footer>
+
+<script src="baytss_shared.js"></script>
+<script>
+(function(){
+  const B = window.BAYTSS;
+  let selectedProduct = null;
+  let currentFilter = 'all';
+
+  // Use dynamic car data from shared JS
+  function getCars() { 
+    if (window.BAYTSS && window.BAYTSS.getCars) {
+      return window.BAYTSS.getCars();
+    }
+    // Fallback to empty array if not loaded yet
+    return [];
+  }
+
+  function renderStore(){
+    const storeCards = document.getElementById('storeCards');
+    const allCarsGrid = document.getElementById('allCarsGrid');
+    const showMoreWrap = document.getElementById('showMoreWrap');
+    let cars = currentFilter === 'all' ? getCars() : getCars().filter(c=>c.brand===currentFilter);
+    storeCards.innerHTML = ''; 
+    allCarsGrid.innerHTML = '';
+    const first6 = cars.slice(0,6);
+    const rest = cars.slice(6);
+    first6.forEach(car => storeCards.appendChild(makeCarCard(car)));
+    rest.forEach(car => allCarsGrid.appendChild(makeCarCard(car)));
+    allCarsGrid.classList.add('cars-hidden');
+    showMoreWrap.style.display = rest.length > 0 ? 'block' : 'none';
+  }
+
+  B.refreshCars = renderStore;
+
+  function makeCarCard(car){
+    const card = document.createElement('div'); 
+    card.className = 'car-card';
+    // Use the local PNG filename directly
+    const imagePath = car.img;
+    card.innerHTML = `
+      <div class="card-img"><img src="${imagePath}" alt="${car.name}" onerror="console.error('Failed to load: ${imagePath}')"></div>
+      <div class="card-body">
+        <div class="card-brand">${car.brand}</div>
+        <div class="card-name">${car.name}</div>
+        <div class="card-price-row"><div class="card-price">${B ? B.fmt(car.price) : '$' + car.price.toLocaleString()}</div><div class="card-cta">View details →</div></div>
+        <div class="card-desc">${car.desc.substring(0, 140)}${car.desc.length > 140 ? '...' : ''}</div>
+      </div>`;
+    card.addEventListener('click', () => openCarModal(car));
+    return card;
+  }
+
+  // Initial render with fallback
+  renderStore();
+  setTimeout(renderStore, 100); // Fallback in case shared JS loads after this script
+
+  document.getElementById('showMoreBtn').addEventListener('click', () => {
+    const allCarsGrid = document.getElementById('allCarsGrid');
+    allCarsGrid.classList.remove('cars-hidden');
+    document.getElementById('showMoreWrap').style.display = 'none';
+    allCarsGrid.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  function openCarModal(car){
+    selectedProduct = car;
+    const imagePath = car.img;
+    document.getElementById('productModalImg').innerHTML = `<img src="${imagePath}" alt="${car.name}" style="width:100%;max-height:360px;object-fit:cover;display:block;" onerror="console.error('Modal image failed: ${imagePath}')">`;
+    document.getElementById('productModalName').textContent = car.brand+' '+car.name;
+    document.getElementById('productModalPrice').textContent = B ? B.fmt(car.price) : '$' + car.price.toLocaleString();
+    document.getElementById('productModalDesc').textContent = car.desc;
+    document.getElementById('productModal').style.display = 'flex';
+  }
+
+  document.getElementById('closeProductModal').addEventListener('click', () => document.getElementById('productModal').style.display='none');
+  document.getElementById('productModal').addEventListener('click', e => { if(e.target.id==='productModal') e.target.style.display='none'; });
+  document.getElementById('productModalBuyBtn').addEventListener('click', () => {
+    const cur = B ? B.getCurrentUser() : null;
+    if(!cur){ document.getElementById('productModal').style.display='none'; if(B) B.openAuth('login'); return; }
+    document.getElementById('productModal').style.display='none'; 
+    openCheckout(selectedProduct);
+  });
+
+  function openCheckout(p){
+    document.getElementById('checkoutSummary').innerHTML = 'Simulated order for <strong>'+p.brand+' '+p.name+'</strong> — <strong>' + (B ? B.fmt(p.price) : '$' + p.price.toLocaleString()) + '</strong>';
+    ['checkoutGlobalError','checkoutGlobalSuccess','cardNameError','cardNumberError','cardExpiryError','cardCvvError'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=''; });
+    ['cardName','cardNumber','cardExpiry','cardCvv'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('checkoutModal').style.display = 'flex';
+  }
+  
+  document.getElementById('closeCheckoutModal').addEventListener('click', ()=>document.getElementById('checkoutModal').style.display='none');
+  document.getElementById('checkoutModal').addEventListener('click', e=>{ if(e.target.id==='checkoutModal') e.target.style.display='none'; });
+
+  const cardNumber=document.getElementById('cardNumber'); 
+  const cardExpiry=document.getElementById('cardExpiry');
+  if(cardNumber) {
+    cardNumber.addEventListener('input',()=>{ 
+      let v=cardNumber.value.replace(/\D/g,'').substring(0,16); 
+      const p=[]; 
+      for(let i=0;i<v.length;i+=4) p.push(v.substring(i,i+4)); 
+      cardNumber.value=p.join(' '); 
+    });
+  }
+  if(cardExpiry) {
+    cardExpiry.addEventListener('input',()=>{ 
+      let v=cardExpiry.value.replace(/\D/g,'').substring(0,4); 
+      if(v.length>=3) v=v.substring(0,2)+'/'+v.substring(2); 
+      cardExpiry.value=v; 
+    });
+  }
+
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  if(placeOrderBtn) {
+    placeOrderBtn.addEventListener('click',()=>{
+      const name=document.getElementById('cardName')?.value.trim() || '';
+      const num=document.getElementById('cardNumber')?.value.replace(/\s+/g,'') || '';
+      const exp=document.getElementById('cardExpiry')?.value.trim() || '';
+      const cvv=document.getElementById('cardCvv')?.value.trim() || '';
+      let err=false;
+      if(!name){ const el=document.getElementById('cardNameError'); if(el) el.textContent='Name is required.'; err=true; }
+      if(!/^\d{16}$/.test(num)){ const el=document.getElementById('cardNumberError'); if(el) el.textContent='Enter a 16-digit number.'; err=true; }
+      if(!/^\d{2}\/\d{2}$/.test(exp)){ const el=document.getElementById('cardExpiryError'); if(el) el.textContent='Use MM/YY format.'; err=true; }
+      if(!/^\d{3,4}$/.test(cvv)){ const el=document.getElementById('cardCvvError'); if(el) el.textContent='Enter a valid CVV.'; err=true; }
+      if(err) return;
+      const cur = B ? B.getCurrentUser() : null;
+      if(!cur||!selectedProduct){ 
+        const el=document.getElementById('checkoutGlobalError'); 
+        if(el) el.textContent='Please sign in first.'; 
+        return; 
+      }
+      if(B) {
+        const orders=B.getOrders();
+        orders.push({id:B.genId('order'),userId:cur.id,productId:selectedProduct.id,price:selectedProduct.price,createdAt:new Date().toISOString()});
+        B.setOrders(orders);
+      }
+      const successEl=document.getElementById('checkoutGlobalSuccess');
+      if(successEl) successEl.textContent='Order placed successfully!';
+      setTimeout(()=>{
+        const modal=document.getElementById('checkoutModal');
+        if(modal) modal.style.display='none';
+      },1500);
+    });
+  }
+
+  // Scroll reveal animation
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    observer.observe(el);
+  });
+
+  renderStore();
+  
+  // Re-render after a short delay to ensure B.ALL_CARS is loaded
+  setTimeout(() => {
+    if (getCars().length === 0) {
+      renderStore();
+    }
+  }, 100);
+})();
+</script>
+</body>
+</html>
